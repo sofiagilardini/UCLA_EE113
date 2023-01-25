@@ -10,10 +10,11 @@ def plot(f0, fs):
     tsample = np.linspace(1, 5, fs)
     x_td = np.cos(2*np.pi*f0*tsample)
 
-    fig, axs = plt.subplots(2)
+    fig, axs = plt.subplots(2, sharey = True)
+    fig.subplots_adjust(hspace=0.5)
     axs[0].plot(t, x_tc)
     axs[0].title.set_text('Continous')
-    axs[1].plot(tsample, x_td, 'r', 'o', markersize = 5)
+    axs[1].plot(tsample, x_td,'o', markersize = 5)
     axs[1].title.set_text('Discrete')
     plt.show()
 
