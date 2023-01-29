@@ -1,8 +1,6 @@
 from matplotlib import pyplot as plt
 import numpy as np 
 
-#plot 'continous' signal 
-
 t = np.linspace(1, 5, 1000)
 
 def plot(f0, fs):
@@ -18,11 +16,18 @@ def plot(f0, fs):
     axs[1].title.set_text('Discrete')
     plt.show()
 
-
+#i
 plot(3,10)
+#ii
 plot(7, 10)
+#iii
 plot(13, 10)
 
+# Nyquist frequency is 2 * the maximum frequency in the spectrum of a signal. In this case with a cos function, there is only one frequency.
+# Aliasing happens when sampling is below Nyquist - which means the signal cannot be recovered perfectly
+# Therefore i) will be recovered perfectly as 10 > 6
+# ii) will not be recovered perfectly as 10 < 14
+# ii) will not be recovered perfectly as 10 < 26
     
 
 
