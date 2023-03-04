@@ -133,30 +133,23 @@ def plot_dft_magnitude_angle(frequency_axis : np.array, f_signal : np.array, fs 
 
 
 
-        # print(normalisedfreq)
-        # print("_______", rollednormalisedfreq)
-        
-        
-        # ax1.set_ylabel("Magnitude")
-        # ax1.stem(rollednormalisedfreq, rolledmag)
-        # ax2.set_ylabel("Phase (radians)")
-        # ax2.stem(rollednormalisedfreq, np.where(rolledmag < 1e-1, 0, rolledphase))
-        # ax2.set_xlabel("Normalised Freq Bins")
-        # ax2.set_ylim((-np.pi, np.pi))
-
-        # normalisedfreq = (frequency_axis / len(frequency_axis)) - 0.5
-
-        # ax1.set_ylabel("Magnitude")
-        # ax1.stem(normalisedfreq, np.abs(f_signal))
-        # ax2.set_ylabel("Phase (radians)")
-        # ax2.stem(normalisedfreq, np.where(np.abs(f_signal) < 1e-1, 0, np.angle(f_signal)))
-        # ax2.set_xlabel("Normalised Freq Bins")
-        # ax2.set_ylim((-np.pi, np.pi))
-
-
-
     if(format == "Centered_Original_Scale"):
-        pass
+
+        #(frequency_axis)
+
+        new_freqaxis = np.linspace(-fs/2, fs/2, N)
+        # print("N is", N)
+        # print(new_freqaxis)
+        #print("length of newfreqaxis is", len(new_freqaxis))
+
+        ax1.set_ylabel("Magnitude")
+        ax1.stem(new_freqaxis, np.abs(f_signal))
+        ax2.set_ylabel("Phase (radians)")
+        ax2.stem(new_freqaxis, np.angle(f_signal))
+        ax2.set_xlabel("Frequency Bins")
+        ax2.set_ylim((-np.pi, np.pi))
+
+
 
     #***************************** Please add your code implementation above this line *****************************
 
@@ -231,7 +224,27 @@ def zero_pad_signal(x_signal : np.array, new_length : int) -> np.array:
     Returns:
         np.array: zero-padded signal
     """
+
+    orig_length = len(x_signal)
     zero_padded_signal = np.zeros(new_length)
+
+    i = 0
+
+    while True: 
+        if (i < orig_length): 
+            zero_padded_signal[i] = x_signal[i]
+            i += 1
+        
+        elif (i < new_length): 
+            zero_padded_signal[i] = 0
+            i += 1
+            
+            if (i == new_length): 
+                break
+    
+
+
+
 
     #***************************** Please add your code implementation under this line *****************************
 
