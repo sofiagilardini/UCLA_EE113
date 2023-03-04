@@ -10,7 +10,10 @@ t_indices = np.arange(0,N)
 print(t_indices) # time series indices go include 0 and N-1
 
 # frequency of the signal 
-f = 2/N
+f = 1/N
+
+print(f"frequency is {f}")
+# Time period here is after how many n's you complete a cycle of the signal. If N = 32, then the frequency is 1/32. 
 
 y_signal = np.sin(2*np.pi*f*t_indices)
 
@@ -26,3 +29,5 @@ plt.title("Signal")
 plt.xlabel("Sample number (n)")
 plt.ylabel("Signal amplitude")
 plt.show()
+
+print(f"Shape of my signal is {y_signal.shape}")

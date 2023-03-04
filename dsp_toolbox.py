@@ -35,6 +35,12 @@ def create_dft_matrix(length : int) -> np.array:
     #***************************** Please add your code implementation under this line *****************************
     # Hint: The complex number e^(-4j) can be represented in numpy by <np.exp(-4j)>
 
+    w = np.exp(-1j*(2/length)*(np.pi))
+
+    for k in range(length):
+        for n in range(length):
+            dft_mat[k][n]=w**(k*n)
+
     #***************************** Please add your code implementation above this line *****************************
 
     return dft_mat
@@ -54,6 +60,8 @@ def apply_dft_matrix(dft_matrix : np.array, signal : np.array):
 
     #***************************** Please add your code implementation under this line *****************************
     # Hint: search the numpy library documentation for the <np.matmul> operation.
+
+    F_signal =np.matmul(dft_matrix,signal)
 
     #***************************** Please add your code implementation above this line *****************************
 
@@ -83,14 +91,69 @@ def plot_dft_magnitude_angle(frequency_axis : np.array, f_signal : np.array, fs 
         ax2.set_ylim((-np.pi, np.pi))
 
     if(format == "ZeroPhase"):
+
         #Hint: the numpy library documentation for the <np.where> operation might be useful.
-        pass
+
+        ax1.set_ylabel("Magnitude")
+        ax1.stem(frequency_axis, np.abs(f_signal))
+        ax2.set_ylabel("Phase (radians)")
+        ax2.stem(frequency_axis, np.where(np.abs(f_signal) < 1e-1, 0, np.angle(f_signal)))
+        ax2.set_xlabel("Frequency Bins")
+        ax2.set_ylim((-np.pi, np.pi))
         
     if(format == "Normalized"):
-        pass
+
+        normalisedfreq = frequency_axis / len(frequency_axis)
+
+        ax1.set_ylabel("Magnitude")
+        ax1.stem(normalisedfreq, np.abs(f_signal))
+        ax2.set_ylabel("Phase (radians)")
+        ax2.stem(normalisedfreq, np.where(np.abs(f_signal) < 1e-1, 0, np.angle(f_signal)))
+        ax2.set_xlabel("Normalised Freq Bins")
+        ax2.set_ylim((-np.pi, np.pi))
 
     if(format == "Centered_Normalized"):
-        pass 
+
+        normalisedfreq = (frequency_axis / len(frequency_axis)) - 0.5
+
+        # rollednormalisedfreq = np.arange(-0.5, 0.5, N) #np.roll(normalisedfreq, 16) 
+        # rolledmag = np.roll(np.abs(f_signal), int(len(normalisedfreq/2)))
+        # rolledphase = np.roll(np.angle(f_signal), int(len(normalisedfreq/2)))
+
+        part1 = f_signal[0:N//2]
+        part2 = f_signal[N//2:]
+        f_signalnew = np.concatenate((part2, part1))
+
+        ax1.set_ylabel("Magnitude")
+        ax1.stem(normalisedfreq, np.abs(f_signalnew))
+        ax2.set_ylabel("Phase (radians)")
+        ax2.stem(normalisedfreq, np.where(np.abs(f_signalnew) < 1e-1, 0, np.angle(f_signalnew)))
+        ax2.set_xlabel("Normalised Freq Bins")
+        ax2.set_ylim((-np.pi, np.pi))
+
+
+
+        # print(normalisedfreq)
+        # print("_______", rollednormalisedfreq)
+        
+        
+        # ax1.set_ylabel("Magnitude")
+        # ax1.stem(rollednormalisedfreq, rolledmag)
+        # ax2.set_ylabel("Phase (radians)")
+        # ax2.stem(rollednormalisedfreq, np.where(rolledmag < 1e-1, 0, rolledphase))
+        # ax2.set_xlabel("Normalised Freq Bins")
+        # ax2.set_ylim((-np.pi, np.pi))
+
+        # normalisedfreq = (frequency_axis / len(frequency_axis)) - 0.5
+
+        # ax1.set_ylabel("Magnitude")
+        # ax1.stem(normalisedfreq, np.abs(f_signal))
+        # ax2.set_ylabel("Phase (radians)")
+        # ax2.stem(normalisedfreq, np.where(np.abs(f_signal) < 1e-1, 0, np.angle(f_signal)))
+        # ax2.set_xlabel("Normalised Freq Bins")
+        # ax2.set_ylim((-np.pi, np.pi))
+
+
 
     if(format == "Centered_Original_Scale"):
         pass
@@ -113,6 +176,17 @@ def idft(signal : np.array) -> np.array:
     # Try to only use the <create_dft_matrix> and <apply_dft_matrix> operations that you have already implemented and some numpy operations.
     # Hint: look up the <np.conjugate>
 
+    dft_mat = create_dft_matrix(length_signal)
+
+    # DFT matrix is unitary, which means that the inverse is equal to the transpose of the conjugate
+
+    conj_dft_mat = (np.conjugate(dft_mat))
+    #print(conj_dft_mat)
+    inv_dft_mat = conj_dft_mat.transpose()
+    #print("______________________", inv_dft_mat)
+
+    time_domain_signal = (apply_dft_matrix(inv_dft_mat, signal)) / (length_signal) 
+
     #***************************** Please add your code implementation above this line *****************************
 
     return time_domain_signal
@@ -131,6 +205,17 @@ def convolve_signals(x_signal : np.array, y_signal : np.array) -> np.array:
     
     #***************************** Please add your code implementation under this line *****************************
     #Make sure you do the time-domain convolution in the frequency domain. 
+
+    dft_mat_x = create_dft_matrix(len(x_signal))
+    dft_mat_y = create_dft_matrix(len(y_signal))
+    x_dft = apply_dft_matrix(dft_mat_x, x_signal)
+    y_dft = apply_dft_matrix(dft_mat_y, y_signal)
+
+    z_signal_dft = x_dft * y_dft
+
+    z_signal = idft(z_signal_dft)
+
+
 
     #***************************** Please add your code implementation above this line *****************************
 
